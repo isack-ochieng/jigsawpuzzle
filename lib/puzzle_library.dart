@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PuzzleArtwork {
   const PuzzleArtwork({
@@ -113,12 +113,12 @@ class PuzzleArtworkPainter extends CustomPainter {
     canvas.drawCircle(
       sunCenter,
       size.shortestSide * 0.105,
-      Paint()..color = artwork.accent.withOpacity(0.96),
+      Paint()..color = artwork.accent.withValues(alpha: 0.96),
     );
     canvas.drawCircle(
       sunCenter,
       size.shortestSide * 0.145,
-      Paint()..color = artwork.accent.withOpacity(0.13),
+      Paint()..color = artwork.accent.withValues(alpha: 0.13),
     );
 
     if (artwork.style == 0) {
@@ -132,7 +132,7 @@ class PuzzleArtworkPainter extends CustomPainter {
     }
 
     final grain = Paint()
-      ..color = Colors.white.withOpacity(0.08)
+      ..color = Colors.white.withValues(alpha: 0.08)
       ..strokeWidth = 1.2 * scale;
     for (var i = 0; i < 18; i++) {
       final x = (i * 83.0 % 1400) * scale;
@@ -168,7 +168,7 @@ class PuzzleArtworkPainter extends CustomPainter {
       const Color(0xFF526E67),
     );
     final line = Paint()
-      ..color = const Color(0xFFEED7A8).withOpacity(0.72)
+      ..color = const Color(0xFFEED7A8).withValues(alpha: 0.72)
       ..strokeWidth = 3 * scale
       ..strokeCap = StrokeCap.round;
     for (var i = 0; i < 7; i++) {
