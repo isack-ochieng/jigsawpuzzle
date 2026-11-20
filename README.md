@@ -31,6 +31,31 @@ On Android or iOS, grant photo-library access when prompted. Built-in puzzles ca
 
 The active photo is stored in the app's private documents directory. Puzzle dimensions, placed-piece indexes, timer, and move count are stored locally and used to restore the active game after the app is closed. Removing the app or clearing its application data removes the local save.
 
+## Android builds through GitHub Actions
+
+No Android SDK is needed on a developer's computer to produce Android builds. Every push to `main`, pull request, or manual workflow dispatch runs the Flutter checks and then builds:
+
+- A debug APK for direct device testing.
+- A release APK.
+- A Google Play Android App Bundle (`.aab`).
+
+Open the repository's **Actions** tab, select **Flutter checks and Android builds**, open a successful run, and download the artifacts at the bottom of the run summary.
+
+The debug APK is signed with the standard debug key and is suitable for installation and testing. The release APK and App Bundle are unsigned until the Play upload key is configured.
+
+### Play signing
+
+Do not commit a keystore or `android/key.properties`. To enable signed release builds, add these repository Actions secrets:
+
+- `ANDROID_KEYSTORE_BASE64` — Base64-encoded upload keystore.
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
+
+The workflow decodes the keystore only on the ephemeral GitHub runner and writes a temporary `android/key.properties`. When the secrets are absent, the debug APK and unsigned release candidates can still be built.
+
+**Before the first Play Store submission:** replace the current placeholder Android application ID, `com.example.jigsaw_puzzle`, with the permanent unique package ID chosen for the Play listing. Do this before publishing; future updates must keep the same application ID.
+
 ## Project structure
 
 - `lib/main.dart` — game flow, UI, photo selection, timer, and local save/restore.
