@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -222,7 +223,10 @@ class PuzzleArtworkPainter extends CustomPainter {
       for (var petal = 0; petal < 5; petal++) {
         final angle = petal * 1.256;
         canvas.drawCircle(
-          point + Offset(22 * scale, 0).rotate(angle),
+          Offset(
+            point.dx + math.cos(angle) * 22 * scale,
+            point.dy + math.sin(angle) * 22 * scale,
+          ),
           11 * scale,
           Paint()
             ..color = i.isEven
@@ -355,45 +359,6 @@ class PuzzleArtworkPainter extends CustomPainter {
   bool shouldRepaint(covariant PuzzleArtworkPainter oldDelegate) {
     return oldDelegate.artwork.id != artwork.id;
   }
-}
-
-extension on Offset {
-  Offset rotate(double angle) {
-    final cosine = mathCos(angle);
-    final sine = mathSin(angle);
-    return Offset(dx * cosine - dy * sine, dx * sine + dy * cosine);
-  }
-}
-
-double mathCos(double value) => _cos(value);
-double mathSin(double value) => _sin(value);
-
-double _cos(double value) {
-  // A small local approximation is not suitable for artwork rotation.
-  return _trig(value, true);
-}
-
-double _sin(double value) {
-  return _trig(value, false);
-}
-
-double _trig(double value, bool cosine) {
-  final normalized = value % (2 * 3.141592653589793);
-  return cosine ? _cosine(normalized) : _sine(normalized);
-}
-
-double _cosine(double x) {
-  return _sine(x + 3.141592653589793 / 2);
-}
-
-double _sine(double x) {
-  var sign = 1.0;
-  if (x > 3.141592653589793) {
-    x -= 3.141592653589793;
-    sign = -1;
-  }
-  final x2 = x * x;
-  return sign * x * (1 - x2 / 6 + x2 * x2 / 120 - x2 * x2 * x2 / 5040);
 }
 
 class PuzzleLibrarySheet extends StatelessWidget {
