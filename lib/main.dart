@@ -921,7 +921,7 @@ class _HomeScreen extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(17),
               child: CustomPaint(
-                painter: const PuzzleArtworkPainter(puzzleArtworks[0]),
+                painter: PuzzleArtworkPainter(puzzleArtworks[0]),
                 child: const SizedBox(width: double.infinity, height: 205),
               ),
             ),
