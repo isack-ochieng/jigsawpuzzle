@@ -494,12 +494,6 @@ class _PuzzleScreenState extends State<PuzzleScreen>
   Future<void> _finishPuzzle() async {
     _clock?.cancel();
     await _preferences.remove(_saveKey);
-    final path = _activeImagePath;
-    if (path != null) {
-      try {
-        await File(path).delete();
-      } catch (_) {}
-    }
     _savedPuzzle = null;
 
     if (!mounted) return;
@@ -1131,7 +1125,9 @@ class _PuzzleView extends StatelessWidget {
     final total = columns * rows;
     final solved = total - pieces.length;
     final progress = solved / total;
-    final coreWidth = min(MediaQuery.sizeOf(context).width - 76, 500.0);
+    final availableBoardWidth =
+        min(MediaQuery.sizeOf(context).width - 64, 500.0);
+    final coreWidth = availableBoardWidth / (1 + 0.48 / columns);
     final cellWidth = coreWidth / columns;
     final cellHeight = coreWidth / aspectRatio / rows;
     final marginX = cellWidth * 0.24;
@@ -1140,12 +1136,12 @@ class _PuzzleView extends StatelessWidget {
     final boardHeight = coreWidth / aspectRatio + marginY * 2;
     final tileAspectRatio = aspectRatio * rows / columns;
     final trayCols = min(columns + 1, 4);
-    final trayPieceWidth = min(
-      (MediaQuery.sizeOf(context).width - 92 - (trayCols - 1) * 8) /
+    final trayCoreWidth = min(
+      (MediaQuery.sizeOf(context).width - 100 - (trayCols - 1) * 8) /
           trayCols,
-      78.0,
+      58.0,
     );
-    final trayPieceHeight = trayPieceWidth / tileAspectRatio * 1.48;
+    final trayCoreHeight = trayCoreWidth / tileAspectRatio;
     final shapes = generatePuzzleShapes(columns, rows, seed: shapeSeed);
 
     return SingleChildScrollView(
@@ -1490,8 +1486,8 @@ class _PuzzleView extends StatelessWidget {
                     children: pieces.map((piece) {
                       return _DraggablePiece(
                         piece: piece,
-                        width: trayPieceWidth,
-                        height: trayPieceHeight,
+                        coreWidth: trayCoreWidth,
+                        coreHeight: trayCoreHeight,
                       );
                     }).toList(),
                   ),
@@ -1572,10 +1568,9 @@ class _PuzzleBoardState extends State<_PuzzleBoard> {
           return;
         }
 
-        widget.onPlacePiece(
-          details.data,
-          row * widget.columns + column,
-        );
+        final targetIndex = row * widget.columns + column;
+        if (widget.pieces[targetIndex] != null) return;
+        widget.onPlacePiece(details.data, targetIndex);
       },
       builder: (context, candidates, rejected) {
         return AnimatedContainer(
@@ -1612,10 +1607,20 @@ class _PuzzleBoardState extends State<_PuzzleBoard> {
                 for (var index = 0; index < widget.pieces.length; index++)
                   if (widget.pieces[index] != null)
                     Positioned(
-                      left: (index % widget.columns) * widget.cellWidth,
-                      top: (index ~/ widget.columns) * widget.cellHeight,
-                      width: widget.cellWidth + widget.marginX * 2,
-                      height: widget.cellHeight + widget.marginY * 2,
+                      left: widget.marginX +
+                          (index % widget.columns) * widget.cellWidth -
+                          widget.pieces[index]!.coreRect.left *
+                              (widget.cellWidth /
+                                  widget.pieces[index]!.coreRect.width),
+                      top: widget.marginY +
+                          (index ~/ widget.columns) * widget.cellHeight -
+                          widget.pieces[index]!.coreRect.top *
+                              (widget.cellHeight /
+                                  widget.pieces[index]!.coreRect.height),
+                      width: widget.cellWidth /
+                          widget.pieces[index]!.coreRect.width,
+                      height: widget.cellHeight /
+                          widget.pieces[index]!.coreRect.height,
                       child: TweenAnimationBuilder<double>(
                         key: ValueKey('placed-' + index.toString()),
                         tween: Tween<double>(begin: 0.82, end: 1),
@@ -1657,16 +1662,18 @@ class _PuzzleBoardState extends State<_PuzzleBoard> {
 class _DraggablePiece extends StatelessWidget {
   const _DraggablePiece({
     required this.piece,
-    required this.width,
-    required this.height,
+    required this.coreWidth,
+    required this.coreHeight,
   });
 
   final PuzzlePiece piece;
-  final double width;
-  final double height;
+  final double coreWidth;
+  final double coreHeight;
 
   @override
   Widget build(BuildContext context) {
+    final width = coreWidth / piece.coreRect.width;
+    final height = coreHeight / piece.coreRect.height;
     return Draggable<PuzzlePiece>(
       data: piece,
       maxSimultaneousDrags: 1,
