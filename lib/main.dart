@@ -255,7 +255,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     try {
       final bytes = await renderPuzzleArtwork(artwork);
       final directory = await getApplicationDocumentsDirectory();
-      final file = File(directory.path + '/jigsaw_active_image.dat');
+      final file = File('${directory.path}/jigsaw_active_image.dat');
       await file.writeAsBytes(bytes, flush: true);
       await _loadPuzzle(
         bytes: bytes,
@@ -1395,14 +1395,14 @@ class _PuzzleView extends StatelessWidget {
                         letterSpacing: 1.3,
                       ),
                     ),
-                    const Spacer(),
-                    const Icon(
+                    Spacer(),
+                    Icon(
                       Icons.touch_app_outlined,
                       color: _muted,
                       size: 14,
                     ),
-                    const SizedBox(width: 5),
-                    const Text(
+                    SizedBox(width: 5),
+                    Text(
                       'Drop pieces where they belong',
                       style: TextStyle(
                         color: _muted,
