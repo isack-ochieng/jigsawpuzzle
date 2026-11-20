@@ -85,8 +85,7 @@ jobs:
             "$GITHUB_WORKSPACE/android/gradle/wrapper/"
           chmod +x "$GITHUB_WORKSPACE/android/gradlew"
 
-      - name: Configure Play Store upload key
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      - name: Configure Play Store upload key (when provided)
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -95,6 +94,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [ -z "${ANDROID_KEYSTORE_BASE64:-}" ]; then
+            echo "No upload key configured; the release bundle will be unsigned."
+            exit 0
+          fi
           KEYSTORE_PATH="$RUNNER_TEMP/jigsaw-upload-key.jks"
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
           cat > android/key.properties <<EOF
