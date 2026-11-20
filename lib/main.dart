@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -212,7 +212,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
         throw const FormatException('Unsupported image format.');
       }
       final directory = await getApplicationDocumentsDirectory();
-      final file = File(directory.path + '/jigsaw_active_image.dat');
+      final file = File('${directory.path}/jigsaw_active_image.dat');
       await file.writeAsBytes(bytes, flush: true);
 
       await _loadPuzzle(
@@ -542,7 +542,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
               ),
               const SizedBox(height: 8),
               Text(
-                'You brought ' + _puzzleTitle + ' back together.',
+                'You brought $_puzzleTitle back together.',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: _muted,
@@ -868,7 +868,7 @@ class _HomeScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: _lime.withOpacity(0.48),
+              color: _lime.withValues(alpha: 0.48),
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Row(
@@ -912,7 +912,7 @@ class _HomeScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: _forest.withOpacity(0.14),
+                  color: _forest.withValues(alpha: 0.14),
                   blurRadius: 24,
                   offset: const Offset(0, 12),
                 ),
@@ -960,10 +960,7 @@ class _HomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            savedPuzzle!.title +
-                                ' · ' +
-                                savedPuzzle!.placedIndexes.length.toString() +
-                                ' pieces placed',
+                            '${savedPuzzle!.title} · ${savedPuzzle!.placedIndexes.length} pieces placed',
                             style: const TextStyle(
                               color: _muted,
                               fontSize: 11,
@@ -1379,7 +1376,7 @@ class _PuzzleView extends StatelessWidget {
               border: Border.all(color: _line),
               boxShadow: [
                 BoxShadow(
-                  color: _ink.withOpacity(0.035),
+                  color: _ink.withValues(alpha: 0.035),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -1387,9 +1384,9 @@ class _PuzzleView extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Row(
+                const Row(
                   children: [
-                    const Text(
+                    Text(
                       'THE BOARD',
                       style: TextStyle(
                         color: _muted,
@@ -1451,11 +1448,11 @@ class _PuzzleView extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: _lime.withOpacity(0.55),
+                  color: _lime.withValues(alpha: 0.55),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  pieces.length.toString() + ' LEFT',
+                  '${pieces.length} LEFT',
                   style: const TextStyle(
                     color: _forest,
                     fontSize: 9,
@@ -1630,7 +1627,7 @@ class _PuzzleBoardState extends State<_PuzzleBoard> {
                       height: widget.cellHeight /
                           widget.pieces[index]!.coreRect.height,
                       child: TweenAnimationBuilder<double>(
-                        key: ValueKey('placed-' + index.toString()),
+                        key: ValueKey('placed-$index'),
                         tween: Tween<double>(begin: 0.82, end: 1),
                         duration: const Duration(milliseconds: 210),
                         curve: Curves.easeOutBack,
@@ -1652,7 +1649,7 @@ class _PuzzleBoardState extends State<_PuzzleBoard> {
                     child: IgnorePointer(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: _lime.withOpacity(0.08),
+                          color: _lime.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
@@ -1843,7 +1840,7 @@ class _DifficultyChip extends StatelessWidget {
           color: selected ? _lime : _surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: selected ? _forest.withOpacity(0.18) : _line,
+            color: selected ? _forest.withValues(alpha: 0.18) : _line,
           ),
         ),
         child: Column(
@@ -1911,5 +1908,5 @@ class _RoundAction extends StatelessWidget {
 String _formatTime(int seconds) {
   final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
   final remainder = (seconds % 60).toString().padLeft(2, '0');
-  return minutes + ':' + remainder;
+  return '$minutes:$remainder';
 }
