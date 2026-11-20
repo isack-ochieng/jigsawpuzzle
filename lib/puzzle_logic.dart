@@ -85,9 +85,9 @@ List<PuzzleShape> generatePuzzleShapes(
   );
   final horizontal = List.generate(
     rows + 1,
-    (_) => List.generate(
+    (rowBoundary) => List.generate(
       columns,
-      (boundary) => boundary == 0 || boundary == rows
+      (_) => rowBoundary == 0 || rowBoundary == rows
           ? 0
           : (random.nextBool() ? 1 : -1),
     ),
