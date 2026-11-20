@@ -53,7 +53,7 @@ void _addPuzzleEdge(
   double depth,
 ) {
   final delta = end - start;
-  final point = (double t) => start + delta * t;
+  Offset point(double t) => start + delta * t;
 
   if (edge == 0) {
     path.lineTo(end.dx, end.dy);
@@ -66,7 +66,6 @@ void _addPuzzleEdge(
   final p3 = point(0.59);
   final p4 = point(0.68);
   final normal = outward * direction;
-  final tabDepth = depth * direction;
 
   path.lineTo(p1.dx, p1.dy);
   path.cubicTo(
@@ -78,10 +77,10 @@ void _addPuzzleEdge(
     p2.dy,
   );
   path.cubicTo(
-    p2.dx + normal.dx * tabDepth * 1.45,
-    p2.dy + normal.dy * tabDepth * 1.45,
-    p3.dx + normal.dx * tabDepth * 1.45,
-    p3.dy + normal.dy * tabDepth * 1.45,
+    p2.dx + normal.dx * depth * 1.45,
+    p2.dy + normal.dy * depth * 1.45,
+    p3.dx + normal.dx * depth * 1.45,
+    p3.dy + normal.dy * depth * 1.45,
     p3.dx,
     p3.dy,
   );
