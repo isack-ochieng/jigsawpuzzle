@@ -133,7 +133,7 @@ class JigsawPieceImage extends StatelessWidget {
     this.fit = BoxFit.fill,
   });
 
-  final List<int> bytes;
+  final Uint8List bytes;
   final PuzzleShape shape;
   final Rect coreRect;
   final BoxFit fit;
@@ -143,7 +143,7 @@ class JigsawPieceImage extends StatelessWidget {
     return ClipPath(
       clipper: JigsawPieceClipper(shape: shape, coreRect: coreRect),
       child: Image.memory(
-        bytes is List<int> ? Uint8List.fromList(bytes) : Uint8List(0),
+        bytes,
         fit: fit,
         gaplessPlayback: true,
         filterQuality: FilterQuality.medium,
