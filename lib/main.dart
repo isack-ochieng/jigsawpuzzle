@@ -208,6 +208,9 @@ class _PuzzleScreenState extends State<PuzzleScreen>
       setState(() => _isLoading = true);
 
       final bytes = await picked.readAsBytes();
+      if (img.decodeImage(bytes) == null) {
+        throw const FormatException('Unsupported image format.');
+      }
       final directory = await getApplicationDocumentsDirectory();
       final file = File(directory.path + '/jigsaw_active_image.dat');
       await file.writeAsBytes(bytes, flush: true);
