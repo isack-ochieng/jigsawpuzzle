@@ -21,3 +21,8 @@ ios/Flutter/ephemeral/
 .idea/
 .vscode/
 *.iml
+
+# Android release signing material (never commit keys)
+android/key.properties
+*.jks
+*.keystore
