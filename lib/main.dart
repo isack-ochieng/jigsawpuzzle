@@ -687,12 +687,17 @@ class _PuzzleScreenState extends State<PuzzleScreen>
                 ],
               ),
               const SizedBox(height: 4),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: Image.memory(
-                  bytes,
-                  fit: BoxFit.contain,
-                  width: double.infinity,
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(dialogContext).height * 0.62,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.memory(
+                    bytes,
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
